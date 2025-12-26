@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Montserrat:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -15,16 +15,19 @@
 
     <script>
         tailwind.config = {
+            darkMode: 'class', // Ativa modo escuro via classe CSS
             theme: {
                 extend: {
                     colors: {
                         gold: { 
-                            400: '#D4AF37', // Ouro Real
-                            500: '#C5A028',
-                            600: '#AA8820',
-                            dim: '#8a6d1c'
+                            400: '#D4AF37', 
+                            500: '#B4942B',
+                            600: '#8E731C',
                         },
-                        dark: { 900: '#050505' }
+                        navy: {
+                            800: '#1e293b', 
+                            900: '#0f172a', 
+                        },
                     },
                     fontFamily: {
                         serif: ['"Playfair Display"', 'serif'],
@@ -33,11 +36,11 @@
                     },
                     animation: {
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fade-in-up': 'fadeInUp 1.2s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 1s ease-out forwards',
                     },
                     keyframes: {
                         fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
@@ -47,140 +50,174 @@
     </script>
 
     <style>
-        body { 
-            background-color: #050505; 
-            color: #e5e5e5; 
-            overflow: hidden; 
+        /* === SISTEMA DE CORES INTELIGENTE === */
+        :root {
+            --bg-color: #F9F9F7;
+            --text-main: #0f172a;
+            --text-sec: #475569;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --overlay-opacity: 0.15;
+            --logo-filter: invert(1) brightness(0); /* Logo preto no fundo claro */
         }
 
-        /* TEXTURA CINEMATOGRÁFICA */
+        /* DARK MODE OVERRIDES */
+        body.dark-mode {
+            --bg-color: #050505;
+            --text-main: #f8fafc;
+            --text-sec: #94a3b8;
+            --card-bg: #0a0a0a;
+            --card-border: #333333;
+            --overlay-opacity: 0.05;
+            --logo-filter: none; /* Logo original no fundo escuro */
+        }
+
+        body { 
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow: hidden; 
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* TEXTURA */
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            pointer-events: none; z-index: 1; opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 1; opacity: var(--overlay-opacity);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+            transition: opacity 0.5s ease;
         }
 
-        /* CONTAINER DAS SEÇÕES */
+        /* LOGO ADAPTATIVO */
+        .logo-adaptive {
+            filter: var(--logo-filter);
+            transition: filter 0.5s ease;
+        }
+
+        /* CARDS ADAPTATIVOS */
+        .theme-card {
+            background-color: var(--card-bg);
+            border-color: var(--card-border);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        /* BOTÃO SOL/LUA */
+        .theme-toggle-btn {
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+            border-radius: 50%; background-color: var(--text-main); color: var(--bg-color);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease; border: 1px solid var(--text-sec);
+        }
+        .theme-toggle-btn:hover { transform: scale(1.1) rotate(15deg); }
+
+        /* SEÇÕES */
         .section-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             opacity: 0; pointer-events: none;
-            transition: opacity 0.9s ease-in-out, transform 0.9s ease-in-out;
-            transform: scale(0.98);
-            z-index: 0; padding-top: 80px; 
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            transform: scale(0.99); z-index: 0; padding-top: 90px; 
             display: flex; flex-direction: column; justify-content: center;
         }
+        .section-container.active { opacity: 1; pointer-events: auto; z-index: 10; transform: scale(1); }
 
-        .section-container.active { 
-            opacity: 1; pointer-events: auto; z-index: 10; 
-            transform: scale(1);
-        }
-
-        /* SCROLL PERSONALIZADO */
         .scrollable-content { 
             height: 100%; overflow-y: auto; 
-            scrollbar-width: thin; scrollbar-color: #333 transparent; 
+            scrollbar-width: thin; scrollbar-color: #D4AF37 transparent; 
             padding-bottom: 40px; 
         }
 
-        /* TEXTO DOURADO GRADIENTE */
-        .gold-text-gradient {
-            background: linear-gradient(to right, #aa771c, #f3e5ab, #aa771c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% auto;
-            animation: shine 6s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
+        /* CLASSES ÚTEIS */
+        .text-adaptive-main { color: var(--text-main); }
+        .text-adaptive-sec { color: var(--text-sec); }
+        
+        /* HEADER */
+        header { background-color: var(--bg-color); border-bottom-color: var(--card-border); transition: background-color 0.5s ease, border-color 0.5s ease; }
 
-        /* LOADING SCREEN */
-        #loader {
-            position: fixed; inset: 0; background: #000; z-index: 9999; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            transition: opacity 1s ease;
-        }
-
-        /* MENU INDICATOR */
+        /* NAV LINKS */
+        .nav-link { color: var(--text-sec); font-weight: 500; }
+        .nav-link:hover { color: #D4AF37; }
         .nav-link.active { color: #D4AF37; }
         .nav-link::after { 
-            content: ''; display: block; width: 0; height: 1px; background: #D4AF37; 
-            transition: width 0.3s; margin: 0 auto;
+            content: ''; display: block; width: 0; height: 2px; background: #D4AF37; 
+            transition: width 0.3s; margin: 2px auto 0;
         }
         .nav-link.active::after { width: 100%; }
-
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased font-sans transition-colors duration-500">
 
-    <div id="loader">
+    <button class="theme-toggle-btn" onclick="toggleTheme()" title="Mudar Tema">
+        <i class="fa-solid fa-moon text-xl" id="theme-icon"></i>
+    </button>
+
+    <div id="loader" style="background-color: var(--bg-color); position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease;">
         <div class="relative">
-            <div class="absolute -inset-4 bg-gold-400/20 blur-xl rounded-full animate-pulse-slow"></div>
-            <img src="image_68e5a2.png" class="h-20 w-auto relative z-10 mb-6 drop-shadow-2xl">
+            <img src="image_68e5a2.png" class="h-20 w-auto relative z-10 mb-6 drop-shadow-sm logo-adaptive animate-pulse">
         </div>
-        <p class="text-gold-dim text-[10px] tracking-[0.4em] uppercase font-sans animate-pulse">Sincronizando Sistema</p>
+        <p class="text-gold-500 text-[10px] tracking-[0.4em] uppercase font-sans font-bold">Carregando Sistema</p>
     </div>
 
     <div class="noise-overlay"></div>
 
-    <header class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center bg-gradient-to-b from-black via-black/80 to-transparent backdrop-blur-[2px]">
-        <div class="flex items-center gap-3 cursor-pointer z-50 group" onclick="goToSection(0)">
-             <img src="image_68e5a2.png" alt="Heider Brito Logo" class="h-14 w-auto object-contain group-hover:brightness-125 transition-all">
+    <header class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center bg-opacity-90 backdrop-blur-md border-b shadow-sm transition-colors duration-500">
+        <div class="flex items-center gap-3 cursor-pointer z-50" onclick="goToSection(0)">
+             <img src="image_68e5a2.png" alt="Heider Brito Logo" class="h-12 w-auto object-contain logo-adaptive">
         </div>
 
         <nav class="hidden md:flex gap-10 z-50">
-            <button onclick="goToSection(0)" class="nav-link text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors duration-300">Início</button>
-            <button onclick="goToSection(1)" class="nav-link text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors duration-300">Sobre</button>
-            <button onclick="goToSection(2)" class="nav-link text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors duration-300">Atuação</button>
-            <button onclick="goToSection(3)" class="nav-link text-xs uppercase tracking-[0.2em] text-gray-400 hover:text-white transition-colors duration-300">Contato</button>
+            <button onclick="goToSection(0)" class="nav-link text-xs uppercase tracking-[0.2em] transition-colors duration-300">Início</button>
+            <button onclick="goToSection(1)" class="nav-link text-xs uppercase tracking-[0.2em] transition-colors duration-300">Sobre</button>
+            <button onclick="goToSection(2)" class="nav-link text-xs uppercase tracking-[0.2em] transition-colors duration-300">Atuação</button>
+            <button onclick="goToSection(3)" class="nav-link text-xs uppercase tracking-[0.2em] transition-colors duration-300">Contato</button>
         </nav>
 
-        <button class="md:hidden text-gold-400 text-xl z-50 hover:rotate-90 transition-transform duration-300" onclick="toggleMenu()">
+        <button class="md:hidden text-adaptive-main text-2xl z-50" onclick="toggleMenu()">
             <i class="fa-solid fa-bars-staggered"></i>
         </button>
     </header>
 
-    <div id="mobile-menu" class="fixed inset-0 bg-black/98 z-40 hidden flex-col items-center justify-center space-y-10 opacity-0 transition-opacity duration-500 backdrop-blur-xl">
-        <button onclick="mobileClick(0)" class="text-3xl font-serif text-white hover:text-gold-400 transition-colors">Início</button>
-        <button onclick="mobileClick(1)" class="text-3xl font-serif text-white hover:text-gold-400 transition-colors">Sobre</button>
-        <button onclick="mobileClick(2)" class="text-3xl font-serif text-white hover:text-gold-400 transition-colors">Atuação</button>
-        <button onclick="mobileClick(3)" class="text-3xl font-serif text-white hover:text-gold-400 transition-colors">Contato</button>
-        <div class="text-gold-dim text-xs tracking-widest mt-10">HEIDER BRITO ADVOCACIA</div>
+    <div id="mobile-menu" class="fixed inset-0 bg-white/95 dark:bg-black/95 z-40 hidden flex-col items-center justify-center space-y-10 opacity-0 transition-opacity duration-500 backdrop-blur-xl">
+        <button onclick="mobileClick(0)" class="text-3xl font-serif text-adaptive-main hover:text-gold-500 transition-colors">Início</button>
+        <button onclick="mobileClick(1)" class="text-3xl font-serif text-adaptive-main hover:text-gold-500 transition-colors">Sobre</button>
+        <button onclick="mobileClick(2)" class="text-3xl font-serif text-adaptive-main hover:text-gold-500 transition-colors">Atuação</button>
+        <button onclick="mobileClick(3)" class="text-3xl font-serif text-adaptive-main hover:text-gold-500 transition-colors">Contato</button>
+        <div class="text-gold-500 text-xs tracking-widest mt-10 font-bold">HEIDER BRITO ADVOCACIA</div>
     </div>
 
     <section id="sec-0" class="section-container active">
         <div class="scrollable-content flex items-center justify-center relative">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gold-400/5 blur-[120px] rounded-full pointer-events-none"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-400/10 blur-[100px] rounded-full pointer-events-none"></div>
 
             <div class="text-center px-6 max-w-5xl mx-auto relative z-10">
                 <div class="mb-8 flex justify-center opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
-                    <div class="h-px w-24 bg-gradient-to-r from-transparent via-gold-400 to-transparent"></div>
+                    <div class="h-px w-24 bg-gold-500"></div>
                 </div>
                 
-                <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-white leading-tight mb-3 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards]">
+                <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-adaptive-main leading-tight mb-3 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] font-medium">
                     DR. HEIDER BRITO
                 </h1>
                 
-                <p class="gold-text-gradient font-serif italic text-xl md:text-3xl mb-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
+                <p class="text-gold-500 font-serif italic text-xl md:text-3xl mb-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
                     Sociedade Individual de Advocacia
                 </p>
 
-                <h2 id="cms-hero-titulo" class="text-gray-200 text-lg uppercase tracking-[0.2em] font-light mb-4 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards]"></h2>
+                <h2 id="cms-hero-titulo" class="text-adaptive-main text-lg uppercase tracking-[0.2em] font-semibold mb-4 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards]"></h2>
                 
-                <p id="cms-hero-subtitulo" class="text-gray-400 font-sans font-light tracking-wide max-w-2xl mx-auto mb-12 text-sm md:text-base leading-relaxed opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards]"></p>
+                <p id="cms-hero-subtitulo" class="text-adaptive-sec font-sans font-medium tracking-wide max-w-2xl mx-auto mb-12 text-sm md:text-base leading-relaxed opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards]"></p>
 
                 <div class="opacity-0 animate-[fadeInUp_1s_ease-out_1.2s_forwards] flex flex-col items-center gap-8">
-                    <button onclick="goToSection(3)" class="group relative px-8 py-4 bg-transparent overflow-hidden rounded-sm transition-all hover:scale-105">
-                        <div class="absolute inset-0 w-0 bg-gold-400 transition-all duration-[250ms] ease-out group-hover:w-full opacity-10"></div>
-                        <span class="relative text-gold-400 group-hover:text-white uppercase tracking-[0.2em] text-xs font-bold border border-gold-400 px-8 py-4 group-hover:border-gold-400/0 transition-colors">
+                    <button onclick="goToSection(3)" class="group relative px-10 py-4 bg-navy-900 text-white overflow-hidden rounded-sm transition-all hover:shadow-xl hover:-translate-y-1 dark:bg-gold-500 dark:text-black">
+                        <span class="relative uppercase tracking-[0.2em] text-xs font-bold">
                             Agendar Consulta
                         </span>
                     </button>
 
-                    <div class="mt-8 max-w-lg mx-auto border-t border-white/5 pt-8">
-                        <i class="fa-solid fa-quote-left text-gold-dim/30 text-xl mb-4 block"></i>
-                        <p id="cms-citacao-texto" class="font-cinzel text-gray-400 text-sm md:text-lg italic leading-relaxed">
+                    <div class="mt-8 max-w-lg mx-auto border-t border-gray-300 dark:border-gray-800 pt-8 transition-colors">
+                        <i class="fa-solid fa-quote-left text-gold-500/50 text-xl mb-4 block"></i>
+                        <p id="cms-citacao-texto" class="font-cinzel text-adaptive-main text-sm md:text-lg italic leading-relaxed font-semibold">
                             "A justiça é a vontade constante de dar a cada um o que é seu."
                         </p>
-                        <p id="cms-citacao-autor" class="text-gold-400 text-xs uppercase tracking-[0.2em] mt-3 font-serif">
+                        <p id="cms-citacao-autor" class="text-gold-600 text-xs uppercase tracking-[0.2em] mt-3 font-bold font-serif">
                             — Ulpiano
                         </p>
                     </div>
@@ -192,30 +229,30 @@
     <section id="sec-1" class="section-container">
         <div class="scrollable-content flex items-center justify-center p-6">
             <div class="max-w-7xl w-full flex flex-col lg:flex-row items-center gap-20">
-                <div class="w-full lg:w-1/2 relative group perspective">
-                    <div class="absolute -inset-2 border border-gold-400/20 z-0 transition-transform duration-700 group-hover:rotate-2"></div>
+                <div class="w-full lg:w-1/2 relative group">
+                    <div class="absolute -inset-4 bg-white dark:bg-gray-900 shadow-2xl z-0 transform rotate-1 transition-transform duration-700 group-hover:rotate-0 border border-gray-100 dark:border-gray-800"></div>
                     <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                         class="relative z-10 w-full h-[500px] object-cover grayscale brightness-90 contrast-125 hover:grayscale-0 transition-all duration-1000 shadow-2xl">
+                         class="relative z-10 w-full h-[500px] object-cover grayscale brightness-110 contrast-100 hover:grayscale-0 transition-all duration-1000">
                 </div>
                 
                 <div class="w-full lg:w-1/2 text-left space-y-8">
                     <div>
-                        <span class="text-gold-400 text-xs uppercase tracking-[0.4em] mb-2 block">Perfil Profissional</span>
-                        <h2 class="text-4xl md:text-5xl font-serif text-white">Excelência & <br><span class="italic text-gray-500">Estratégia</span></h2>
+                        <span class="text-gold-600 text-xs uppercase tracking-[0.4em] mb-2 block font-bold">Perfil Profissional</span>
+                        <h2 class="text-4xl md:text-5xl font-serif text-adaptive-main">Excelência & <br><span class="italic text-adaptive-sec">Estratégia</span></h2>
                     </div>
                     
-                    <p id="cms-sobre-texto" class="text-gray-400 font-light leading-7 text-justify text-sm md:text-base border-l border-gold-400/30 pl-6">
+                    <p id="cms-sobre-texto" class="text-adaptive-sec font-medium leading-8 text-justify text-sm md:text-base border-l-2 border-gold-400 pl-6">
                         Carregando biografia...
                     </p>
 
                     <div class="grid grid-cols-2 gap-8 pt-4">
                          <div>
-                             <p class="text-gold-400 font-serif text-2xl mb-1" id="cms-oab">OAB/BA ...</p>
-                             <p class="text-gray-600 text-[10px] uppercase tracking-widest">Registro Oficial</p>
+                             <p class="text-adaptive-main font-serif text-2xl mb-1 font-bold" id="cms-oab">OAB/BA ...</p>
+                             <p class="text-adaptive-sec text-[10px] uppercase tracking-widest font-bold">Registro Oficial</p>
                          </div>
                          <div>
-                             <p class="text-white font-serif text-xl mb-1" id="cms-subsecao">...</p>
-                             <p class="text-gray-600 text-[10px] uppercase tracking-widest">Jurisdição</p>
+                             <p class="text-adaptive-main font-serif text-xl mb-1 font-bold" id="cms-subsecao">...</p>
+                             <p class="text-adaptive-sec text-[10px] uppercase tracking-widest font-bold">Jurisdição</p>
                          </div>
                     </div>
                 </div>
@@ -226,41 +263,41 @@
     <section id="sec-2" class="section-container">
         <div class="scrollable-content flex flex-col items-center justify-center p-6">
             <div class="text-center mb-16">
-                <span class="text-gold-dim text-xs uppercase tracking-[0.3em]">Áreas de Prática</span>
-                <h2 class="text-4xl font-serif text-white mt-3">Expertise Jurídica</h2>
+                <span class="text-gold-600 text-xs uppercase tracking-[0.3em] font-bold">Áreas de Prática</span>
+                <h2 class="text-4xl font-serif text-adaptive-main mt-3">Expertise Jurídica</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl w-full px-4">
-                <div class="group p-10 bg-gradient-to-br from-white/5 to-transparent border border-white/5 hover:border-gold-400/40 transition-all duration-500 hover:-translate-y-2">
-                    <div class="h-12 w-12 rounded-full bg-gold-400/10 flex items-center justify-center mb-6 text-gold-400 group-hover:bg-gold-400 group-hover:text-black transition-colors">
+                <div class="group p-10 theme-card border shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-sm">
+                    <div class="h-12 w-12 rounded-full bg-gold-400/20 flex items-center justify-center mb-6 text-gold-600 group-hover:bg-navy-900 group-hover:text-white dark:group-hover:bg-gold-500 dark:group-hover:text-black transition-colors">
                         <i class="fa-solid fa-file-signature text-xl"></i>
                     </div>
-                    <h3 class="text-xl font-serif text-white mb-3">Direito Civil</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed font-light">Contratos, responsabilidade civil e sucessões. Proteção patrimonial com inteligência estratégica.</p>
+                    <h3 class="text-xl font-serif text-adaptive-main mb-3 font-bold">Direito Civil</h3>
+                    <p class="text-xs text-adaptive-sec leading-relaxed font-medium">Contratos, responsabilidade civil e sucessões. Proteção patrimonial com inteligência estratégica.</p>
                 </div>
                 
-                <div class="group p-10 bg-gradient-to-br from-white/5 to-transparent border border-white/5 hover:border-gold-400/40 transition-all duration-500 hover:-translate-y-2">
-                    <div class="h-12 w-12 rounded-full bg-gold-400/10 flex items-center justify-center mb-6 text-gold-400 group-hover:bg-gold-400 group-hover:text-black transition-colors">
+                <div class="group p-10 theme-card border shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-sm">
+                    <div class="h-12 w-12 rounded-full bg-gold-400/20 flex items-center justify-center mb-6 text-gold-600 group-hover:bg-navy-900 group-hover:text-white dark:group-hover:bg-gold-500 dark:group-hover:text-black transition-colors">
                         <i class="fa-solid fa-gavel text-xl"></i>
                     </div>
-                    <h3 class="text-xl font-serif text-white mb-3">Direito Penal</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed font-light">Defesa técnica intransigente em inquéritos e processos. Garantia absoluta dos direitos fundamentais.</p>
+                    <h3 class="text-xl font-serif text-adaptive-main mb-3 font-bold">Direito Penal</h3>
+                    <p class="text-xs text-adaptive-sec leading-relaxed font-medium">Defesa técnica intransigente em inquéritos e processos. Garantia absoluta dos direitos fundamentais.</p>
                 </div>
 
-                <div class="group p-10 bg-gradient-to-br from-white/5 to-transparent border border-white/5 hover:border-gold-400/40 transition-all duration-500 hover:-translate-y-2">
-                    <div class="h-12 w-12 rounded-full bg-gold-400/10 flex items-center justify-center mb-6 text-gold-400 group-hover:bg-gold-400 group-hover:text-black transition-colors">
+                <div class="group p-10 theme-card border shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-sm">
+                    <div class="h-12 w-12 rounded-full bg-gold-400/20 flex items-center justify-center mb-6 text-gold-600 group-hover:bg-navy-900 group-hover:text-white dark:group-hover:bg-gold-500 dark:group-hover:text-black transition-colors">
                         <i class="fa-solid fa-briefcase text-xl"></i>
                     </div>
-                    <h3 class="text-xl font-serif text-white mb-3">Empresarial</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed font-light">Consultoria preventiva para negócios. Segurança jurídica para tomadas de decisão complexas.</p>
+                    <h3 class="text-xl font-serif text-adaptive-main mb-3 font-bold">Empresarial</h3>
+                    <p class="text-xs text-adaptive-sec leading-relaxed font-medium">Consultoria preventiva para negócios. Segurança jurídica para tomadas de decisão complexas.</p>
                 </div>
 
-                <div class="group p-10 bg-gradient-to-br from-white/5 to-transparent border border-white/5 hover:border-gold-400/40 transition-all duration-500 hover:-translate-y-2">
-                    <div class="h-12 w-12 rounded-full bg-gold-400/10 flex items-center justify-center mb-6 text-gold-400 group-hover:bg-gold-400 group-hover:text-black transition-colors">
+                <div class="group p-10 theme-card border shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 rounded-sm">
+                    <div class="h-12 w-12 rounded-full bg-gold-400/20 flex items-center justify-center mb-6 text-gold-600 group-hover:bg-navy-900 group-hover:text-white dark:group-hover:bg-gold-500 dark:group-hover:text-black transition-colors">
                         <i class="fa-solid fa-scale-balanced text-xl"></i>
                     </div>
-                    <h3 class="text-xl font-serif text-white mb-3">Trabalhista</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed font-light">Defesa de interesses nas relações de trabalho. Compliance e mitigação de passivos.</p>
+                    <h3 class="text-xl font-serif text-adaptive-main mb-3 font-bold">Trabalhista</h3>
+                    <p class="text-xs text-adaptive-sec leading-relaxed font-medium">Defesa de interesses nas relações de trabalho. Compliance e mitigação de passivos.</p>
                 </div>
             </div>
         </div>
@@ -268,37 +305,40 @@
 
     <section id="sec-3" class="section-container">
         <div class="scrollable-content flex flex-col items-center justify-center p-6 relative">
-            <div class="w-full max-w-3xl bg-[#0a0a0a] border border-white/10 p-12 md:p-16 text-center shadow-[0_0_50px_rgba(0,0,0,0.8)] relative overflow-hidden group">
-                <div class="absolute inset-0 bg-gradient-to-b from-gold-400/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            
+            <div class="w-full max-w-3xl bg-white dark:bg-black p-12 md:p-16 text-center shadow-2xl relative overflow-hidden group rounded-sm border border-gray-200 dark:border-gray-800 transition-colors duration-500">
+                
+                <div class="absolute inset-0 bg-gradient-to-b from-navy-900/5 to-transparent dark:from-white/5 pointer-events-none"></div>
 
-                <i class="fa-solid fa-scale-unbalanced-flip text-4xl text-gold-dim mb-6 block opacity-50"></i>
+                <i class="fa-solid fa-scale-unbalanced-flip text-4xl text-gold-600 mb-6 block opacity-100"></i>
 
-                <h2 class="text-3xl md:text-5xl font-serif text-white mb-6">Atendimento Privado</h2>
-                <p class="text-gray-400 font-light mb-12 text-sm md:text-base max-w-lg mx-auto">
+                <h2 class="text-3xl md:text-5xl font-serif text-navy-900 dark:text-white mb-6 transition-colors">Atendimento Privado</h2>
+                
+                <p class="text-gray-600 dark:text-gray-300 font-medium mb-12 text-sm md:text-base max-w-lg mx-auto transition-colors">
                     A advocacia de excelência exige proximidade. <br>
                     Entre em contato para uma análise preliminar.
                 </p>
 
                 <a id="cms-whatsapp-btn" href="#" target="_blank" 
-                   class="relative inline-flex items-center gap-4 bg-white text-black font-bold py-5 px-10 uppercase tracking-widest text-xs hover:bg-gold-400 transition-all duration-500 shadow-xl hover:shadow-gold-400/20 z-20">
+                   class="relative inline-flex items-center gap-4 bg-navy-900 text-white dark:bg-white dark:text-navy-900 font-bold py-5 px-10 uppercase tracking-widest text-xs hover:bg-gold-500 hover:text-white dark:hover:bg-gold-500 dark:hover:text-black transition-all duration-500 shadow-xl z-20 rounded-sm">
                     <i class="fa-brands fa-whatsapp text-xl"></i>
                     Iniciar Conversa
                 </a>
                 
-                <div class="mt-10 mb-2">
-                    <span class="block text-xs text-gray-500 uppercase tracking-widest mb-1">Telefone Direto</span>
-                    <div class="text-gold-400 font-serif text-2xl" id="cms-telefone">...</div>
+                <div class="mt-12 mb-2">
+                    <span class="block text-xs text-gray-400 uppercase tracking-widest mb-1 font-bold">Telefone Direto</span>
+                    <div class="text-gold-600 font-serif text-2xl font-bold" id="cms-telefone">...</div>
                 </div>
 
-                <div class="mt-12 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] text-gray-500 uppercase tracking-[0.2em] relative z-20">
-                    <a href="https://www.instagram.com/advheiderbrito" target="_blank" class="hover:text-white text-gray-400 transition-colors flex items-center gap-2 relative z-50 cursor-pointer p-2">
+                <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] text-gray-500 uppercase tracking-[0.2em] relative z-20 transition-colors">
+                    <a href="https://www.instagram.com/advheiderbrito" target="_blank" class="hover:text-navy-900 dark:hover:text-white transition-colors flex items-center gap-2 relative z-50 cursor-pointer p-2 font-bold">
                         <i class="fa-brands fa-instagram text-lg"></i> @advheiderbrito
                     </a>
-                    <span id="cms-footer-oab" class="text-gray-500">OAB/BA ...</span>
+                    <span id="cms-footer-oab" class="font-bold">OAB/BA ...</span>
                 </div>
             </div>
 
-            <footer class="mt-8 text-center opacity-30 text-[9px] text-gray-500 uppercase tracking-widest">
+            <footer class="mt-8 text-center opacity-50 text-[9px] text-adaptive-main uppercase tracking-widest font-bold">
                 &copy; 2025 Heider Brito Sociedade Individual de Advocacia
             </footer>
         </div>
@@ -307,14 +347,38 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjBjrPTZQiaHWLzYMKogrxLsXOW_nO2QKY2ECrqWneucLkn-atUl9fvEf_2McKHadkLA/exec"; 
 
+        // === TEMA ===
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            body.classList.toggle('dark-mode');
+            
+            if(body.classList.contains('dark-mode')) {
+                icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const icon = document.getElementById('theme-icon');
+            if(savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
+            }
+        }
+
+        // === DADOS ===
         async function fetchSiteData() {
             try {
                 const response = await fetch(SCRIPT_URL);
-                if (!response.ok) throw new Error('Falha na conexão');
                 const data = await response.json();
                 
-                // Preenche o site
-                // setText('cms-nome-advogado', data.nome_advogado); -> REMOVIDO PARA USAR "DR. HEIDER BRITO" FIXO
                 setText('cms-hero-titulo', data.hero_titulo);
                 setText('cms-hero-subtitulo', data.hero_subtitulo);
                 setText('cms-sobre-texto', data.sobre_texto);
@@ -323,7 +387,6 @@
                 setText('cms-telefone', data.telefone);
                 setText('cms-footer-oab', data.oab);
                 
-                // CITAÇÃO DA PLANILHA (Se não tiver na planilha, mantém o HTML padrão de Ulpiano)
                 if(data.citacao_texto) setText('cms-citacao-texto', `"${data.citacao_texto}"`);
                 if(data.citacao_autor) setText('cms-citacao-autor', `— ${data.citacao_autor}`);
 
@@ -351,7 +414,7 @@
             if (el && text) el.innerText = text;
         }
 
-        // --- LÓGICA DE NAVEGAÇÃO SPA ---
+        // === NAVEGAÇÃO SPA ===
         let currentSection = 0;
         function goToSection(index) {
             document.querySelector('.section-container.active').classList.remove('active');
@@ -397,6 +460,7 @@
         }, { passive: false });
 
         window.onload = () => {
+            loadTheme();
             fetchSiteData();
             updateNav();
         };
