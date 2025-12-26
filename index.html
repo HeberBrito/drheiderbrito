@@ -15,7 +15,7 @@
 
     <script>
         tailwind.config = {
-            darkMode: 'class', // Ativa modo escuro via classe CSS
+            darkMode: 'class', 
             theme: {
                 extend: {
                     colors: {
@@ -188,22 +188,21 @@
         <div class="scrollable-content flex items-center justify-center relative">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-400/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-            <div class="text-center px-6 max-w-5xl mx-auto relative z-10">
-                <div class="mb-8 flex justify-center opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
-                    <div class="h-px w-24 bg-gold-500"></div>
+            <div class="text-center px-6 max-w-5xl mx-auto relative z-10 pt-10 md:pt-0"> <div class="mb-6 md:mb-8 flex justify-center opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
+                    <div class="h-px w-16 md:w-24 bg-gold-500"></div>
                 </div>
                 
-                <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-adaptive-main leading-tight mb-3 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] font-medium">
+                <h1 class="font-serif text-3xl sm:text-4xl md:text-7xl lg:text-8xl text-adaptive-main leading-tight mb-3 opacity-0 animate-[fadeInUp_1s_ease-out_0.4s_forwards] font-medium">
                     DR. HEIDER BRITO
                 </h1>
                 
-                <p class="text-gold-500 font-serif italic text-xl md:text-3xl mb-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
+                <p class="text-gold-500 font-serif italic text-lg md:text-3xl mb-8 opacity-0 animate-[fadeInUp_1s_ease-out_0.6s_forwards]">
                     Sociedade Individual de Advocacia
                 </p>
 
-                <h2 id="cms-hero-titulo" class="text-adaptive-main text-lg uppercase tracking-[0.2em] font-semibold mb-4 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards]"></h2>
+                <h2 id="cms-hero-titulo" class="text-adaptive-main text-sm md:text-lg uppercase tracking-[0.2em] font-semibold mb-4 opacity-0 animate-[fadeInUp_1s_ease-out_0.8s_forwards]"></h2>
                 
-                <p id="cms-hero-subtitulo" class="text-adaptive-sec font-sans font-medium tracking-wide max-w-2xl mx-auto mb-12 text-sm md:text-base leading-relaxed opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards]"></p>
+                <p id="cms-hero-subtitulo" class="text-adaptive-sec font-sans font-medium tracking-wide max-w-2xl mx-auto mb-12 text-xs md:text-base leading-relaxed opacity-0 animate-[fadeInUp_1s_ease-out_1s_forwards]"></p>
 
                 <div class="opacity-0 animate-[fadeInUp_1s_ease-out_1.2s_forwards] flex flex-col items-center gap-8">
                     <button onclick="goToSection(3)" class="group relative px-10 py-4 bg-navy-900 text-white overflow-hidden rounded-sm transition-all hover:shadow-xl hover:-translate-y-1 dark:bg-gold-500 dark:text-black">
