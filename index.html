@@ -50,7 +50,7 @@
     </script>
 
     <style>
-        /* === SISTEMA DE CORES INTELIGENTE === */
+        /* === SISTEMA DE CORES === */
         :root {
             --bg-color: #F9F9F7;
             --text-main: #0f172a;
@@ -58,10 +58,9 @@
             --card-bg: #ffffff;
             --card-border: #e2e8f0;
             --overlay-opacity: 0.15;
-            --logo-filter: invert(1) brightness(0); /* Logo preto no fundo claro */
         }
 
-        /* DARK MODE OVERRIDES */
+        /* DARK MODE */
         body.dark-mode {
             --bg-color: #050505;
             --text-main: #f8fafc;
@@ -69,7 +68,6 @@
             --card-bg: #0a0a0a;
             --card-border: #333333;
             --overlay-opacity: 0.05;
-            --logo-filter: none; /* Logo original no fundo escuro */
         }
 
         body { 
@@ -85,12 +83,6 @@
             pointer-events: none; z-index: 1; opacity: var(--overlay-opacity);
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
             transition: opacity 0.5s ease;
-        }
-
-        /* LOGO ADAPTATIVO */
-        .logo-adaptive {
-            filter: var(--logo-filter);
-            transition: filter 0.5s ease;
         }
 
         /* CARDS ADAPTATIVOS */
@@ -152,7 +144,7 @@
 
     <div id="loader" style="background-color: var(--bg-color); position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 1s ease;">
         <div class="relative">
-            <img src="image_68e5a2.png" class="h-20 w-auto relative z-10 mb-6 drop-shadow-sm logo-adaptive animate-pulse">
+            <img src="image_68e5a2.png" class="h-20 w-auto relative z-10 mb-6 drop-shadow-sm animate-pulse">
         </div>
         <p class="text-gold-500 text-[10px] tracking-[0.4em] uppercase font-sans font-bold">Carregando Sistema</p>
     </div>
@@ -161,7 +153,7 @@
 
     <header class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center bg-opacity-90 backdrop-blur-md border-b shadow-sm transition-colors duration-500">
         <div class="flex items-center gap-3 cursor-pointer z-50" onclick="goToSection(0)">
-             <img src="image_68e5a2.png" alt="Heider Brito Logo" class="h-12 w-auto object-contain logo-adaptive">
+             <img src="image_68e5a2.png" alt="Heider Brito Logo" class="h-12 w-auto object-contain">
         </div>
 
         <nav class="hidden md:flex gap-10 z-50">
@@ -188,7 +180,8 @@
         <div class="scrollable-content flex items-center justify-center relative">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-400/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-            <div class="text-center px-6 max-w-5xl mx-auto relative z-10 pt-10 md:pt-0"> <div class="mb-6 md:mb-8 flex justify-center opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
+            <div class="text-center px-6 max-w-5xl mx-auto relative z-10 pt-10 md:pt-0"> 
+                <div class="mb-6 md:mb-8 flex justify-center opacity-0 animate-[fadeInUp_1s_ease-out_0.2s_forwards]">
                     <div class="h-px w-16 md:w-24 bg-gold-500"></div>
                 </div>
                 
